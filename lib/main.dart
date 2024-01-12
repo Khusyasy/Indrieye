@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:indrieye/pages/login_page.dart';
 import 'package:indrieye/pages/navigation_page.dart';
+import 'package:indrieye/pages/profile_page.dart';
 import 'package:indrieye/pages/register_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,7 @@ class MainApp extends StatelessWidget {
         '/home': (context) => const NavigationPage(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
+        '/settings': (context) => const ProfilePage()
       },
     );
   }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "428873113547",
+    "project_id": "indrieye-app",
+    "storage_bucket": "indrieye-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428873113547:android:00a174f91d24d3d2fae04e",
+        "android_client_info": {
+          "package_name": "com.example.indrieye"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgls626RYm4ym13VVunzd7torGBrcUiHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

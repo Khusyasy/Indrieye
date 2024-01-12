@@ -6,27 +6,19 @@ import 'package:indrieye/pages/register_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
-  runApp(const MainApp());
-  initFirebase();
-}
-
-Future<void> initFirebase() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    if (user == null) {
-      print('User is currently signed out!');
-    } else {
-      print('User is signed in!');
-    }
-  });
+  var isLoggedIn = FirebaseAuth.instance.currentUser != null;
+  runApp(MainApp(initialRoute: isLoggedIn ? '/home' : '/login'));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp({super.key, required this.initialRoute});
+
+  final String initialRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +26,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         colorSchemeSeed: Colors.blue,
       ),
-      initialRoute: '/login',
+      initialRoute: initialRoute,
       routes: {
         '/home': (context) => const NavigationPage(),
         '/login': (context) => const LoginPage(),

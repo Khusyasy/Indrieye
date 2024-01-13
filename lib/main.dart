@@ -6,6 +6,7 @@ import 'package:indrieye/pages/profile_page.dart';
 import 'package:indrieye/pages/register_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:accessibility_tools/accessibility_tools.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MainApp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/settings': (context) => const ProfilePage()
       },
+      builder: (context, child) => AccessibilityTools(child: child),
     );
   }
 }

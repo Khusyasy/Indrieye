@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tflite/tflite.dart';
+import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:camera/camera.dart';
 
 class ObstacleView extends StatefulWidget {
@@ -15,30 +15,42 @@ class _ObstacleViewState extends State<ObstacleView> {
   late List<CameraDescription> _cameras;
   CameraController? controller;
 
+  bool _modelLoaded = false;
   bool _isDetecting = false;
+  List<dynamic>? recognitions;
   Timer? _timer;
 
-  List<dynamic>? recognitions;
-
   Future<void> _processImage(CameraImage img) async {
-    _isDetecting = true;
-    recognitions = await Tflite.detectObjectOnFrame(
-      bytesList: img.planes.map((plane) {
-        return plane.bytes;
-      }).toList(),
-      model: "SSDMobileNet",
-      imageHeight: img.height,
-      imageWidth: img.width,
-      imageMean: 127.5,
-      imageStd: 127.5,
-      rotation: 90,
-      threshold: 0.4,
-      asynch: true,
-    );
+    if (mounted) {
+      setState(() {
+        _isDetecting = true;
+      });
+    }
+    if (_modelLoaded) {
+      recognitions = await Tflite.detectObjectOnFrame(
+        bytesList: img.planes.map((plane) {
+          return plane.bytes;
+        }).toList(),
+        model: "SSDMobileNet",
+        imageHeight: img.height,
+        imageWidth: img.width,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        rotation: 90,
+        threshold: 0.3,
+        asynch: true,
+      );
+    }
     // // ignore: avoid_print
     // print(recognitions);
-    setState(() {});
-    _isDetecting = false;
+    if (mounted) {
+      setState(() {});
+      _timer = Timer(const Duration(milliseconds: 250), () {
+        setState(() {
+          _isDetecting = false;
+        });
+      });
+    }
   }
 
   Future<void> loadModel() async {
@@ -49,6 +61,7 @@ class _ObstacleViewState extends State<ObstacleView> {
       numThreads: 4,
       useGpuDelegate: false,
     );
+    _modelLoaded = true;
   }
 
   Future<void> loadCamera() async {
@@ -65,11 +78,7 @@ class _ObstacleViewState extends State<ObstacleView> {
         }
 
         if (!_isDetecting) {
-          if (_timer == null || !_timer!.isActive) {
-            _timer = Timer(const Duration(milliseconds: 100), () {
-              _processImage(img);
-            });
-          }
+          _processImage(img);
         }
       });
       setState(() {});
@@ -104,12 +113,14 @@ class _ObstacleViewState extends State<ObstacleView> {
 
   @override
   void dispose() {
-    controller!.dispose();
+    _timer?.cancel();
+    _modelLoaded = false;
     Tflite.close();
+    controller?.dispose();
     super.dispose();
   }
 
-List<Widget> _buildBoxes(Size imageSize) {
+  List<Widget> _buildBoxes(Size imageSize) {
     List<Widget> boxes = [];
 
     if (recognitions != null) {
@@ -150,15 +161,16 @@ List<Widget> _buildBoxes(Size imageSize) {
 
   @override
   Widget build(BuildContext context) {
+    if (controller == null || !controller!.value.isInitialized) {
+      return const Center(
+        child: Text('Loading Camera'),
+      );
+    }
+
     return Stack(
       children: [
-        AnimatedSwitcher(
-          duration: Durations.medium1,
-          child: controller != null && controller!.value.isInitialized
-              ? CameraPreview(controller!)
-              : Container(),
-        ),
-        ..._buildBoxes(controller!.value.previewSize ?? const Size(1.0, 1.0)),
+        CameraPreview(controller!),
+        ..._buildBoxes(controller!.value.previewSize!),
       ],
     );
   }

@@ -14,11 +14,4 @@ class CameraProvider extends ChangeNotifier {
     await _controller!.initialize();
     notifyListeners();
   }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    notifyListeners();
-    super.dispose();
-  }
 }

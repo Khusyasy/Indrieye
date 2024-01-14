@@ -34,7 +34,7 @@ class ProfilePage extends StatelessWidget {
               await FirebaseAuth.instance.signOut();
               if (context.mounted) {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/login', (route) => false);
+                    context, '/landing', (route) => false);
               }
             },
           ),

@@ -1,17 +1,56 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:indrieye/theme.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Daftar'),
+        backgroundColor: Theme.of(context).colorScheme.background,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Daftarkan akun baru',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                  const FormRegister(),
+                  const TextToMasuk(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class FormRegister extends StatefulWidget {
+  const FormRegister({Key? key}) : super(key: key);
+
+  @override
+  State<FormRegister> createState() => _FormRegisterState();
+}
+
+class _FormRegisterState extends State<FormRegister> {
   final _formKey = GlobalKey<FormState>();
   var _obscureText = true;
 
+  // final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _cPasswordController = TextEditingController();
@@ -24,13 +63,15 @@ class _RegisterPageState extends State<RegisterPage> {
           password: _emailController.text,
         );
 
-        if (mounted) Navigator.pushReplacementNamed(context, '/home');
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('The password provided is too weak.'),
+                content: Text('Password yang dimasukkan terlalu lemah.'),
               ),
             );
           }
@@ -38,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('The account already exists for that email.'),
+                content: Text('Email sudah digunakan.'),
               ),
             );
           }
@@ -49,123 +90,160 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return Form(
+      key: _formKey,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'Create Account',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 32,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // TextFormField(
+              //   controller: _namaController,
+              //   keyboardType: TextInputType.emailAddress,
+              //   textInputAction: TextInputAction.next,
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Masukkan nama';
+              //     }
+              //     return null;
+              //   },
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'NAMA',
+              //     hintText: 'Masukkan nama-mu',
+              //   ),
+              // ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Masukkan email';
+                  }
+                  // https://stackoverflow.com/a/50663835/10599311
+                  final bool emailValid = RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(value);
+                  if (!emailValid) {
+                    return 'Masukkan email yang valid';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'EMAIL',
+                  hintText: 'Masukkan email-mu',
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                obscureText: _obscureText,
+                enableSuggestions: false,
+                autocorrect: false,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Masukkan password';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: 'PASSWORD',
+                  hintText: 'Masukkan password-mu',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                    icon: _obscureText
+                        ? const Icon(Icons.visibility)
+                        : const Icon(Icons.visibility_off),
                   ),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    // https://stackoverflow.com/a/50663835/10599311
-                    final bool emailValid = RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value);
-                    if (!emailValid) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                  ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _cPasswordController,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.go,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Masukkan password kembali';
+                  }
+                  if (value != _passwordController.text) {
+                    return "Password tidak sama";
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'KONFIRMASI PASSWORD',
+                  hintText: 'Masukkan password-mu',
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  obscureText: _obscureText,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      icon: _obscureText
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: register,
+                  style: elevatedButtonStyle(context),
+                  child: const Text('DAFTAR'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TextToMasuk extends StatelessWidget {
+  const TextToMasuk({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 8.0,
+      ),
+      child: GestureDetector(
+        onTap: () => Navigator.popAndPushNamed(context, "/login"),
+        child: Text.rich(
+          textAlign: TextAlign.left,
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'Sudah punya akun? ',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              TextSpan(
+                text: 'MASUK',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: const Color(0xFF24D7FF),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _cPasswordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.go,
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password again';
-                    }
-                    if (value != _passwordController.text) {
-                      return "Password doesn't match";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Confirm Password',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: register,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ),
-                    child: const Text('Submit'),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 8.0,
-                  ),
-                  child: GestureDetector(
-                    onTap: () => Navigator.popAndPushNamed(context, "/login"),
-                    child: Text(
-                      "Already have an account? Sign In",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

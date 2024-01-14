@@ -13,7 +13,6 @@ dependencies:
   firebase_core: ^2.24.2
   flutter:
     sdk: flutter
-  flutter_signin_button: ^2.0.0
   flutter_tflite: ^1.0.1
 
 dev_dependencies:
@@ -25,3 +24,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/images/

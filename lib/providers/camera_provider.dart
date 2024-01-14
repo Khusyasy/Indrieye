@@ -10,7 +10,11 @@ class CameraProvider extends ChangeNotifier {
 
   Future<void> initCamera() async {
     _cameras = await availableCameras();
-    _controller = CameraController(_cameras[0], ResolutionPreset.high);
+    _controller = CameraController(
+      _cameras[0],
+      ResolutionPreset.high,
+      enableAudio: false,
+    );
     await _controller!.initialize();
     notifyListeners();
   }

@@ -9,48 +9,54 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  int _currentIndex = 0;
-  static const List<Widget> _pages = [
-    ObstacleView(),
-    ObstacleView(),
-  ];
-  static const List<BottomNavigationBarItem> _navItems = [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.fence),
-      label: 'Obstacle Detection',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.text_fields),
-      label: 'Text Reader',
-    ),
-  ];
-
-  void _onTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Indrieye"),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pushNamed(context, "/settings"),
-            icon: const Icon(Icons.account_circle),
-          )
-        ],
-      ),
-      body: AnimatedSwitcher(
-        duration: Durations.medium1,
-        child: _pages[_currentIndex],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTap,
-        items: _navItems,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    IconButton(
+                      onPressed: () =>
+                          Navigator.pushNamed(context, "/settings"),
+                      icon: const Icon(Icons.account_circle),
+                    ),
+                    const Expanded(
+                      child: TabBar(
+                        dividerHeight: 0,
+                        tabs: [
+                          Tab(text: 'DETEKSI RINTANGAN'),
+                          Tab(text: 'BACA TEKS'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Expanded(
+                child: TabBarView(
+                  children: [
+                    ObstacleView(),
+                    ObstacleView(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -48,9 +48,10 @@ class _NavigationPageState extends State<NavigationPage> {
               ),
               const Expanded(
                 child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
                   children: [
                     ObstacleView(),
-                    ObstacleView(),
+                    SizedBox(),
                   ],
                 ),
               ),

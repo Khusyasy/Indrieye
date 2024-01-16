@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:indrieye/views/obstacle_view.dart';
+import 'package:indrieye/views/reader_view.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({Key? key}) : super(key: key);
@@ -51,7 +52,7 @@ class _NavigationPageState extends State<NavigationPage> {
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     ObstacleView(),
-                    SizedBox(),
+                    ReaderView(),
                   ],
                 ),
               ),

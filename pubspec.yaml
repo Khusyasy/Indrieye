@@ -15,6 +15,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_mlkit_object_detection: ^0.11.0
+  google_mlkit_text_recognition: ^0.11.0
+  path_provider: ^2.1.2
   provider: ^6.1.1
 
 dev_dependencies:

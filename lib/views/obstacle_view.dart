@@ -1,10 +1,14 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:google_mlkit_object_detection/google_mlkit_object_detection.dart';
+import 'package:indrieye/utils/coordinates_translator.dart';
 import 'package:indrieye/utils/mlkit_utils.dart';
 import 'package:indrieye/utils/object_detector_painter.dart';
+
+import 'obstacle_info_view.dart';
 
 class ObstacleView extends StatefulWidget {
   const ObstacleView({Key? key}) : super(key: key);
@@ -20,6 +24,11 @@ class _ObstacleViewState extends State<ObstacleView> {
   List<DetectedObject> _objects = [];
   bool _canProcess = false;
   bool _isBusy = false;
+
+  DetectedObject? _currentObject;
+  Preview? _preview;
+
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -62,7 +71,7 @@ class _ObstacleViewState extends State<ObstacleView> {
       List<DetectedObject> processedObjects = [];
       for (DetectedObject object in objects) {
         if (object.labels.isNotEmpty) {
-          if (object.labels[0].confidence > 0.5) {
+          if (object.labels[0].confidence > 0.65) {
             processedObjects.add(object);
           }
         }
@@ -73,6 +82,7 @@ class _ObstacleViewState extends State<ObstacleView> {
       _isBusy = false;
       if (mounted) {
         setState(() {
+          _setObject(processedObjects.elementAtOrNull(0));
           _objects = processedObjects;
         });
       }
@@ -90,7 +100,75 @@ class _ObstacleViewState extends State<ObstacleView> {
       _canProcess = false;
       _isBusy = false;
       _objectDetector?.close();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
     }
+  }
+
+  Future<void> _speak(String text) async {
+    if (text.isEmpty) {
+      return;
+    }
+    await flutterTts.setLanguage('id-ID');
+    await flutterTts.speak(text);
+  }
+
+  Future<void> _stop() async {
+    await flutterTts.stop();
+  }
+
+  void _setObject(DetectedObject? detObj) {
+    if (detObj == null) {
+      _stop();
+      setState(() {
+        _currentObject = null;
+      });
+      return;
+    }
+
+    if (_currentObject == null ||
+        _currentObject!.trackingId != detObj.trackingId ||
+        (_currentObject!.trackingId == detObj.trackingId &&
+            teksArah(_currentObject!) != teksArah(detObj))) {
+      setState(() {
+        _speak(teksHasil(detObj));
+        _currentObject = detObj;
+      });
+    }
+  }
+
+  String teksArah(DetectedObject detObj) {
+    if (_preview == null || currentImg == null) {
+      return '';
+    }
+    // 1 2 3
+    // 1 = kiri, 2 = depan, 3 = kanan
+    // TODO: berdasarkan orientasi device (?)
+    final rect = detObj.boundingBox;
+    final x = translateX(
+        rect.center.dx,
+        _preview!.previewSize,
+        currentImg!.metadata!.size,
+        currentImg!.metadata!.rotation,
+        CameraLensDirection.back);
+    final prevX = _preview!.previewSize.width / 3;
+    if (x < prevX) {
+      return 'kiri';
+    } else if (x < (prevX * 2)) {
+      return 'depan';
+    } else {
+      return 'kanan';
+    }
+  }
+
+  String teksHasil(DetectedObject detObj) {
+    final label = detObj.labels[0];
+    return '${label.text} di ${teksArah(detObj)} Anda';
   }
 
   @override
@@ -98,7 +176,6 @@ class _ObstacleViewState extends State<ObstacleView> {
     return CameraAwesomeBuilder.previewOnly(
       previewFit: CameraPreviewFit.cover,
       previewAlignment: Alignment.center,
-      previewPadding: const EdgeInsets.all(16),
       onImageForAnalysis: (img) => _processImageObstacle(img),
       imageAnalysisConfig: AnalysisConfig(
         androidOptions: const AndroidAnalysisOptions.nv21(
@@ -108,6 +185,7 @@ class _ObstacleViewState extends State<ObstacleView> {
         autoStart: true,
       ),
       builder: (cameraModeState, preview) {
+        _preview = preview;
         return Stack(
           children: [
             if (kDebugMode && currentImg != null)
@@ -125,120 +203,11 @@ class _ObstacleViewState extends State<ObstacleView> {
                 ),
               ),
             ObstacleInfo(
-              _objects.elementAtOrNull(0),
-              preview.rect,
+              _currentObject != null ? teksHasil(_currentObject!) : '',
             ),
           ],
         );
       },
-    );
-  }
-}
-
-class ObstacleInfo extends StatelessWidget {
-  const ObstacleInfo(
-    this.object,
-    this.previewRect, {
-    super.key,
-  });
-
-  final DetectedObject? object;
-  final Rect previewRect;
-
-  String generateArah() {
-    // 1 2 3
-    // 4 5 6
-    // 7 8 9
-    // 1 = kiri atas  , 2 = depan atas  , 3 = kanan atas
-    // 4 = kiri       , 5 = depan       , 6 = kanan
-    // 7 = kiri bawah , 8 = depan bawah , 9 = kanan bawah
-    // TODO: masih salah karena preview terpotong, jadi ga sesuai posisi yang terdetect
-    final rect = object!.boundingBox;
-    final x = rect.center.dx;
-    final y = rect.center.dy;
-    final prevX = previewRect.width / 3;
-    final prevY = previewRect.height / 3;
-    if (x < prevX) {
-      if (y < prevY) {
-        return 'kiri atas';
-      } else if (y < prevY * 2) {
-        return 'kiri';
-      } else {
-        return 'kiri bawah';
-      }
-    } else if (x < prevX * 2) {
-      if (y < prevY) {
-        return 'depan atas';
-      } else if (y < prevY * 2) {
-        return 'depan';
-      } else {
-        return 'depan bawah';
-      }
-    } else {
-      if (y < prevY) {
-        return 'kanan atas';
-      } else if (y < prevY * 2) {
-        return 'kanan';
-      } else {
-        return 'kanan bawah';
-      }
-    }
-  }
-
-  String generateText() {
-    final label = object!.labels[0];
-    // final trackingId = object!.trackingId;
-    return '${label.text} di ${generateArah()} Anda';
-  }
-  // TODO: TTS pas object terpilih berubah (?)
-
-  @override
-  Widget build(BuildContext context) {
-    if (object == null || object!.labels.isEmpty) {
-      return Container();
-    }
-
-    return Positioned(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 128,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.warning_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 64,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16,
-                      ),
-                      child: Text(
-                        generateText(),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

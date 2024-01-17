@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
@@ -207,7 +206,7 @@ class _ObstacleViewState extends State<ObstacleView> {
         _preview = preview;
         return Stack(
           children: [
-            if (kDebugMode && currentImg != null)
+            if (currentImg != null)
               SizedBox(
                 width: preview.rect.width,
                 height: preview.rect.height,

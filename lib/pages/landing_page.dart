@@ -18,23 +18,9 @@ class LandingPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Stack(
-                  children: [
-                    SizedBox(
-                      width: 135,
-                      height: 155,
-                      child: Image.asset('assets/images/landing_bg.png'),
-                    ),
-                    Positioned(
-                      top: 15,
-                      left: 25,
-                      child: SizedBox(
-                        width: 120,
-                        height: 165,
-                        child: Image.asset('assets/images/landing.png'),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  width: 180,
+                  child: Image.asset('assets/images/landing.png'),
                 ),
                 const SizedBox(
                   height: 32.0,

@@ -48,17 +48,21 @@ class FormLogin extends StatefulWidget {
 
 class _FormLoginState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
-  var _obscureText = true;
+  bool _obscureText = true;
+  bool _isLoading = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void signIn() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text,
-          password: _emailController.text,
+          password: _passwordController.text,
         );
 
         if (mounted) {
@@ -82,6 +86,11 @@ class _FormLoginState extends State<FormLogin> {
             );
           }
         }
+      }
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -151,8 +160,10 @@ class _FormLoginState extends State<FormLogin> {
                       });
                     },
                     icon: _obscureText
-                        ? const Icon(Icons.visibility)
-                        : const Icon(Icons.visibility_off),
+                        ? const Icon(Icons.visibility,
+                            semanticLabel: 'Tampilkan password')
+                        : const Icon(Icons.visibility_off,
+                            semanticLabel: 'Sembunyikan password'),
                   ),
                 ),
               ),
@@ -160,9 +171,15 @@ class _FormLoginState extends State<FormLogin> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: signIn,
+                  onPressed: _isLoading ? null : signIn,
                   style: elevatedButtonStyle(context),
-                  child: const Text('MASUK'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Text('MASUK'),
                 ),
               ),
             ],
@@ -187,21 +204,26 @@ class TextToDaftar extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () => Navigator.popAndPushNamed(context, "/register"),
-        child: Text.rich(
-          textAlign: TextAlign.left,
-          TextSpan(
-            children: [
+        child: SizedBox(
+          height: 48,
+          child: Center(
+            child: Text.rich(
+              textAlign: TextAlign.center,
               TextSpan(
-                text: 'Belum punya akun? ',
-                style: Theme.of(context).textTheme.bodyLarge,
+                children: [
+                  TextSpan(
+                    text: 'Belum punya akun? ',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  TextSpan(
+                    text: 'DAFTAR',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: const Color(0xFF24D7FF),
+                        ),
+                  ),
+                ],
               ),
-              TextSpan(
-                text: 'DAFTAR',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: const Color(0xFF24D7FF),
-                    ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

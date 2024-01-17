@@ -7,7 +7,6 @@ import 'package:indrieye/pages/profile_page.dart';
 import 'package:indrieye/pages/register_page.dart';
 import 'package:indrieye/providers/camera_provider.dart';
 import 'package:indrieye/theme.dart';
-import 'package:indrieye/views/splash_view.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,7 +44,6 @@ class MainApp extends StatelessWidget {
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
           '/settings': (context) => const ProfilePage(),
-          // '/splash': (context) => const SplashView(),
         },
         builder: (context, child) => AccessibilityTools(child: child),
       ),

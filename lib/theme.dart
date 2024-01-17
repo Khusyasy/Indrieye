@@ -20,6 +20,10 @@ ButtonStyle elevatedButtonStyle(BuildContext context) {
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(2)),
     ),
+    textStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+    ),
   );
 }
 
@@ -30,6 +34,10 @@ ButtonStyle outlinedButtonStyle(BuildContext context) {
     padding: const EdgeInsets.symmetric(horizontal: 16),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(2)),
+    ),
+    textStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
     ),
   ).copyWith(
     side: MaterialStateProperty.resolveWith<BorderSide>(

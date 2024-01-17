@@ -13,17 +13,23 @@ class ProfilePage extends StatelessWidget {
         title: const Text("Settings"),
       ),
       body: ListView(
-        children: <Widget>[
+        children: [
           UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.background,
+            ),
             accountName:
                 Text(user != null ? user.displayName ?? 'No Name' : 'No User'),
             accountEmail:
                 Text(user != null ? user.email ?? 'No Email' : 'No User'),
-            currentAccountPicture: const CircleAvatar(
-              backgroundColor: Colors.white,
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
               child: Text(
                 'U',
-                style: TextStyle(fontSize: 40.0),
+                style: TextStyle(
+                  fontSize: 48.0,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             ),
           ),

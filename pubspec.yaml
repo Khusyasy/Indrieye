@@ -17,6 +17,7 @@ dependencies:
   flutter_tts: ^3.8.5
   google_mlkit_object_detection: ^0.11.0
   google_mlkit_text_recognition: ^0.11.0
+  path: ^1.8.3
   path_provider: ^2.1.2
   provider: ^6.1.1
 
@@ -30,3 +31,4 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/ml/

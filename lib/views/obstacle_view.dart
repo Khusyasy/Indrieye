@@ -18,7 +18,7 @@ class ObstacleView extends StatefulWidget {
 }
 
 class _ObstacleViewState extends State<ObstacleView> {
-  ObjectDetector? _objectDetector;
+  late ObjectDetector? _objectDetector;
 
   InputImage? currentImg;
   List<DetectedObject> _objects = [];
@@ -43,7 +43,7 @@ class _ObstacleViewState extends State<ObstacleView> {
     super.dispose();
   }
 
-  void _createDetector() {
+  Future<void> _createDetector() async {
     _objectDetector = ObjectDetector(
       options: ObjectDetectorOptions(
         mode: DetectionMode.stream,
@@ -51,6 +51,16 @@ class _ObstacleViewState extends State<ObstacleView> {
         multipleObjects: true,
       ),
     );
+    // TODO: custom tflite model
+    // final modelPath =
+    //     await getModelPath('assets/ml/potholes_efficientdet_lite0.tflite');
+    // final options = LocalObjectDetectorOptions(
+    //   mode: DetectionMode.stream,
+    //   modelPath: modelPath,
+    //   classifyObjects: true,
+    //   multipleObjects: true,
+    // );
+    // _objectDetector = ObjectDetector(options: options);
     _canProcess = true;
   }
 
@@ -76,8 +86,15 @@ class _ObstacleViewState extends State<ObstacleView> {
           }
         }
       }
-      processedObjects.sort(
-          (a, b) => b.labels[0].confidence.compareTo(a.labels[0].confidence));
+      processedObjects.sort((a, b) {
+        final confidenceComparison =
+            b.labels[0].confidence.compareTo(a.labels[0].confidence);
+        if (confidenceComparison != 0) {
+          return confidenceComparison;
+        } else {
+          return a.boundingBox.top.compareTo(b.boundingBox.top);
+        }
+      });
 
       _isBusy = false;
       if (mounted) {
@@ -167,8 +184,10 @@ class _ObstacleViewState extends State<ObstacleView> {
   }
 
   String teksHasil(DetectedObject detObj) {
-    final label = detObj.labels[0];
-    return '${label.text} di ${teksArah(detObj)} Anda';
+    // TODO: sesuaikan dengan objek yang dideteksi
+    // final label = detObj.labels[0];
+    // return '${label.text} di ${teksArah(detObj)} Anda';
+    return 'Rintangan di ${teksArah(detObj)} Anda';
   }
 
   @override

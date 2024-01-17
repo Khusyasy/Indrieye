@@ -33,7 +33,10 @@ class _NavigationPageState extends State<NavigationPage> {
                     IconButton(
                       onPressed: () =>
                           Navigator.pushNamed(context, "/settings"),
-                      icon: const Icon(Icons.account_circle),
+                      icon: const Icon(
+                        Icons.account_circle,
+                        semanticLabel: 'Settings',
+                      ),
                     ),
                     const Expanded(
                       child: TabBar(

@@ -48,7 +48,9 @@ class FormRegister extends StatefulWidget {
 
 class _FormRegisterState extends State<FormRegister> {
   final _formKey = GlobalKey<FormState>();
-  var _obscureText = true;
+  bool _obscureText = true;
+  bool _isLoading = false;
+
 
   // final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -57,10 +59,13 @@ class _FormRegisterState extends State<FormRegister> {
 
   void register() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text,
-          password: _emailController.text,
+          password: _passwordController.text,
         );
 
         if (mounted) {
@@ -84,6 +89,11 @@ class _FormRegisterState extends State<FormRegister> {
             );
           }
         }
+      }
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -170,8 +180,10 @@ class _FormRegisterState extends State<FormRegister> {
                       });
                     },
                     icon: _obscureText
-                        ? const Icon(Icons.visibility)
-                        : const Icon(Icons.visibility_off),
+                        ? const Icon(Icons.visibility,
+                            semanticLabel: 'Tampilkan password')
+                        : const Icon(Icons.visibility_off,
+                            semanticLabel: 'Sembunyikan password'),
                   ),
                 ),
               ),
@@ -202,9 +214,15 @@ class _FormRegisterState extends State<FormRegister> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: register,
+                  onPressed: _isLoading ? null : register,
                   style: elevatedButtonStyle(context),
-                  child: const Text('DAFTAR'),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Text('DAFTAR'),
                 ),
               ),
             ],
@@ -229,21 +247,26 @@ class TextToMasuk extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () => Navigator.popAndPushNamed(context, "/login"),
-        child: Text.rich(
-          textAlign: TextAlign.left,
-          TextSpan(
-            children: [
+        child: SizedBox(
+          height: 48,
+          child: Center(
+            child: Text.rich(
+              textAlign: TextAlign.left,
               TextSpan(
-                text: 'Sudah punya akun? ',
-                style: Theme.of(context).textTheme.bodyLarge,
+                children: [
+                  TextSpan(
+                    text: 'Sudah punya akun? ',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  TextSpan(
+                    text: 'MASUK',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: const Color(0xFF24D7FF),
+                        ),
+                  ),
+                ],
               ),
-              TextSpan(
-                text: 'MASUK',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: const Color(0xFF24D7FF),
-                    ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

@@ -1,10 +1,10 @@
 name: indrieye
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+  sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
   accessibility_tools: ^1.0.1
@@ -12,6 +12,7 @@ dependencies:
   camerawesome: ^2.0.0+1
   firebase_auth: ^4.16.0
   firebase_core: ^2.24.2
+  flutter_native_splash: ^2.3.9
   flutter:
     sdk: flutter
   flutter_tts: ^3.8.5
@@ -24,9 +25,43 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.3.9
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
     - assets/images/
+
+flutter_native_splash:
+  color: "#000000"
+  android: true
+  ios: true
+  web: true
+  android_12:
+    # The image parameter sets the splash screen icon image.  If this parameter is not specified,
+    # the app's launcher icon will be used instead.
+    # Please note that the splash screen will be clipped to a circle on the center of the screen.
+    # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
+    # 640 pixels in diameter.
+    # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
+    # 768 pixels in diameter.
+    image: assets/images/Indrieye.png
+
+    # Splash screen background color.
+    #color: "#42a5f5"
+
+    # App icon background color.
+    #icon_background_color: "#111111"
+
+    # The branding property allows you to specify an image used as branding in the splash screen.
+    #branding: assets/dart.png
+
+    # The image_dark, color_dark, icon_background_color_dark, and branding_dark set values that
+    # apply when the device is in dark mode. If they are not specified, the app will use the
+    # parameters from above.
+    #image_dark: assets/android12splash-invert.png
+    #color_dark: "#042a49"
+    #icon_background_color_dark: "#eeeeee"
+
+  

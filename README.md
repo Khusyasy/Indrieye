@@ -54,6 +54,8 @@ Recognize text in front of the user and read it out loud.
 
 ## APK Download
 
+If you just want to try this app without running the development environtment, kindly download the apk using this download link
+
 <img src="readme/bit.ly_Indrieye.png" width="150px" alt="QR Code" />
 
 [Download Link](https://bit.ly/Indrieye)
@@ -92,4 +94,12 @@ Recognize text in front of the user and read it out loud.
 ## How to Run Development
 
 ### Prerequisites
+- Flutter 3.16.7
+- Android SDK
+- Android Emulator
 
+### Building Step
+- Clone the repository
+- Run `flutter pub get` on terminal
+- Launch your emulator or connect your device
+- Run debug using `F5` or `flutter run`

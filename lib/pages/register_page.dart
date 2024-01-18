@@ -9,7 +9,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar'),
+        // title: const Text('Daftar'),
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: SafeArea(

@@ -46,7 +46,7 @@ class _ReaderResultViewState extends State<ReaderResultView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Teks yang dibaca'),
+        // title: const Text('Teks yang dibaca'),
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: SafeArea(

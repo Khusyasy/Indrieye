@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Masuk'),
+        // title: const Text('Masuk'),
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: SafeArea(

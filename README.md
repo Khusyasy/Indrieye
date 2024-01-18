@@ -1,4 +1,4 @@
-# IndriEye
+# Indrieye
 
 <center>
   <img src="readme/Indrieye.png" width="200px" />
@@ -7,17 +7,22 @@
 Indrieye is an object detection application that can help with vision and guide them through their activities. We utilize smartphone cameras to replace vision, and voice support to guide their daily activities.
 
 ## Features
-- Obstacle Detection
-- Text Reader
+
+### Obstacle Detection
+Detect obstacles in front of the user and warn them with voice support. Coarse classification categories supported: home goods, fashion goods, food, plants, and places.
+
+### Text Reader
+Recognize text in front of the user and read it out loud.
 
 ## Team GreyBox
-- Hustler:
-    - Anak Agung Gde Pradnyana
-- Hipster:
-    - Ari Ziddan Nugraha
-- Hacker:
-    - Muhammad Luthfi Khusyasy
-    - Raditya Aydin
+### Hustler:
+- Anak Agung Gde Pradnyana
+### Hipster:
+- Ari Ziddan Nugraha
+### Hacker:
+- Muhammad Luthfi Khusyasy
+- Raditya Aydin
+
 
 ## Tech Stack
 
@@ -72,12 +77,19 @@ Indrieye is an object detection application that can help with vision and guide 
 
 ### Obstacle Detection
 
-
+<div>
+    <img src="readme/obstacle-1.jpg" width="200px" alt="Obstacle Detection Start" />
+    <img src="readme/obstacle-2.jpg" width="200px" alt="Obstacle Detection Warning" />
+</div>
 
 ### Text Reader
 
-
-
+<div>
+    <img src="readme/reader-1.jpg" width="200px" alt="Text Reader Start" />
+    <img src="readme/reader-2.jpg" width="200px" alt="Text Reader Result" />
+</div>
 
 ## How to Run Development
+
+### Prerequisites
 

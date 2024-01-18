@@ -186,7 +186,7 @@ class _ObstacleViewState extends State<ObstacleView> {
     // TODO: sesuaikan dengan objek yang dideteksi
     // final label = detObj.labels[0];
     // return '${label.text} di ${teksArah(detObj)} Anda';
-    return 'Rintangan di ${teksArah(detObj)} Anda';
+    return 'Di arah ${teksArah(detObj)}';
   }
 
   @override

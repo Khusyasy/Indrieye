@@ -222,7 +222,10 @@ class _FormRegisterState extends State<FormRegister> {
                           width: 16,
                           child: CircularProgressIndicator(),
                         )
-                      : const Text('DAFTAR'),
+                      : const Text(
+                          'DAFTAR',
+                          semanticsLabel: 'Daftar',
+                        ),
                 ),
               ),
             ],

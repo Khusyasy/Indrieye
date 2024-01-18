@@ -179,7 +179,10 @@ class _FormLoginState extends State<FormLogin> {
                           width: 16,
                           child: CircularProgressIndicator(),
                         )
-                      : const Text('MASUK'),
+                      : const Text(
+                          'MASUK',
+                          semanticsLabel: 'Masuk',
+                        ),
                 ),
               ),
             ],

@@ -60,7 +60,10 @@ class LandingPage extends StatelessWidget {
                   child: ElevatedButton(
                     style: elevatedButtonStyle(context),
                     onPressed: () => Navigator.pushNamed(context, '/login'),
-                    child: const Text('MASUK'),
+                    child: const Text(
+                      'MASUK',
+                      semanticsLabel: 'Masuk',
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -68,7 +71,10 @@ class LandingPage extends StatelessWidget {
                   child: OutlinedButton(
                     style: outlinedButtonStyle(context),
                     onPressed: () => Navigator.pushNamed(context, '/register'),
-                    child: const Text('DAFTAR'),
+                    child: const Text(
+                      'DAFTAR',
+                      semanticsLabel: 'Daftar',
+                    ),
                   ),
                 ),
               ],

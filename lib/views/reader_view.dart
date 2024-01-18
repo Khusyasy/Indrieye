@@ -130,7 +130,7 @@ class _ReaderViewState extends State<ReaderView> {
                     ),
                     icon: const Icon(
                       Icons.text_fields_rounded,
-                      semanticLabel: 'Tombol untuk memulai membaca teks',
+                      semanticLabel: 'Deteksi Teks',
                     ),
                     onPressed: startProcessing,
                   ),
